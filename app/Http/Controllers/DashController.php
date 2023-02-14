@@ -10,7 +10,7 @@ class DashController extends Controller
     {
         return Inertia::render('Dash', [
             'invitations' => auth()->user()->invitations()
-                ->latest()->select(['title', 'slug', 'hex_color', 'views'])->get()
+                ->latest()->select(['title', 'slug', 'hex_color', 'rsvps'])->get()
         ]);
     }
 }

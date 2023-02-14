@@ -6,7 +6,11 @@ use App\Http\Controllers\DashController;
 use App\Http\Controllers\InvitationController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('home', 'home')->name('home');
+Route::get('/', function() {
+    if(auth()->check()) return redirect()->route('dash');
+    return view('home');
+});
+
 Route::get('/invitation/{invitation:slug}', [InvitationController::class, 'show']);
 
 Route::redirect('/login', '/auth/redirect')->name('login');

@@ -7,7 +7,7 @@ createInertiaApp({
         const page = pages[`./Pages/${name}.svelte`];
         return {
             default: page.default,
-            layout: page.layout ?? Layout
+            layout: page.layout ?? null
         }
     },
     setup({ el, App, props }) {

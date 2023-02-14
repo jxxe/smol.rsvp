@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->foreignIdFor(User::class);
-            
-            $table->integer('views')->default(0);
+
+            $table->integer('rsvps')->default(0);
 
             $table->string('calendar_id');
             $table->string('event_id');

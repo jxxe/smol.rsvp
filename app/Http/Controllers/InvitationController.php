@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invitation;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\File;
@@ -12,9 +13,6 @@ class InvitationController extends Controller
 {
     public function show(Invitation $invitation)
     {
-        $invitation->views++;
-        $invitation->save();
-
         return Inertia::render('Invitation', [
             'invitation' => $invitation->only(
                 'title',
@@ -38,13 +36,32 @@ class InvitationController extends Controller
 
         if($invitation->email_domain) $email = request('email_part') . '@' . $invitation->email_domain;
         else $email = request('email');
+
+        $event = Http::withToken(auth()->user()->token())->get(
+            "https://www.googleapis.com/calendar/v3/calendars/$invitation->calendar_id/events/$invitation->event_id"
+        )->json();
+
+        $event['attendees'] = $event['attendees'] ?? [];
+        $event['attendees'][] = [
+            'email' => $email,
+            'responseStatus' => 'needsAction'
+        ];
+
+        Http::withToken(auth()->user()->token())->put(
+            "https://www.googleapis.com/calendar/v3/calendars/$invitation->calendar_id/events/$invitation->event_id?sendUpdates=all",
+            $event
+        );
+
+        $invitation->rsvps++;
+        $invitation->save();
     }
 
     public function destroy(Invitation $invitation)
     {
         if($invitation->user_id === auth()->user()->id) {
             $invitation->delete();
-            Storage::delete([$invitation->logo_url, $invitation->image_url]);
+            if($invitation->logo_url) Storage::delete($invitation->logo_url);
+            if($invitation->image_url) Storage::delete($invitation->image_url);
         }
     }
     

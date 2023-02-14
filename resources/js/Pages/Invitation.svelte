@@ -1,9 +1,7 @@
-<script context="module">
-    export const layout = false;
-</script>
-
 <script>
     import { useForm } from '@inertiajs/svelte';
+    import { Icon } from '@steeze-ui/svelte-icon';
+    import { Loader4 } from '@steeze-ui/remix-icons';
 
     import Button from '../Components/Button.svelte';
     export let invitation;
@@ -20,7 +18,12 @@
         $form.post('/api/accept-invitation', {
             onSuccess() {
                 isDone = true;
-                if(invitation.redirect_url) window.location = invitation.redirect_url;
+
+                if(invitation.redirect_url) {
+                    setTimeout(() => {
+                        window.location = invitation.redirect_url;
+                    }, 1000);
+                }
             }
         });
     }
@@ -55,9 +58,9 @@
             </div>
 
             {#if isDone}
-                <p>You're confirmed!</p>
+                <p>Check your email for an invitation!</p>
             {:else}
-                <form on:submit|preventDefault={submit} class="flex lg:flex-row flex-col gap-2">
+                <form class:pointer-events-none={$form.processing} class:opacity-75={$form.processing} on:submit|preventDefault={submit} class="flex lg:flex-row flex-col gap-2">
                     <label class="w-full">
                         {#if invitation.email_domain}
                             <div class="input flex">
@@ -69,7 +72,13 @@
                         {/if}
                     </label>
                     
-                    <Button primary={true}>Submit</Button>
+                    <Button class="relative" primary={true}>
+                        <div class:opacity-100={$form.processing} class="opacity-0 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
+                            <Icon class="w-5 animate-spin" src={Loader4}/>
+                        </div>
+
+                        <span class:opacity-0={$form.processing}>Submit</span>
+                    </Button>
                 </form>
             {/if}
         </div>
