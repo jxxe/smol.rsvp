@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html class="text-[15px]" lang="en-US">
 
 <head>
     <meta charset="utf-8">
@@ -13,6 +13,9 @@
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
     @inertiaHead
+
+    <title>Free and easy RSVP pages, powered by Google Calendar — smol.rsvp</title>
+    <x-meta/>
 </head>
 
 <body class="antialiased text-gray-700">

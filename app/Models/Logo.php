@@ -7,25 +7,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class Invitation extends Model
+class Logo extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    public $timestamps = false;
 
-    public function user()
+    public function invitations()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(Invitation::class);
     }
-
-    public function logo() {
-        return $this->belongsTo(Logo::class);
-    }
-
-    public function logoUrl() {
-        return $this->logo()->first()->image_url ?? null;
-    }
-
+    
     public function imageUrl(): Attribute
     {
         return $this->urlToCdn();
@@ -39,7 +31,7 @@ class Invitation extends Model
                 $url = Storage::url($value);
                 if(app()->environment('local')) return $url;
                 $url = urlencode($value);
-                return "https://wsrv.nl/?url=$url&w=1200&we&output=webp";
+                return "https://wsrv.nl/?url=$url&w=512&we&output=webp";
             }
         );
     }

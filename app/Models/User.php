@@ -38,6 +38,11 @@ class User extends Authenticatable
         return $this->hasMany(Invitation::class);
     }
 
+    public function logos()
+    {
+        return $this->hasMany(Logo::class);
+    }
+
     public function token()
     {
         if(now() > $this->google_access_token_expires) {

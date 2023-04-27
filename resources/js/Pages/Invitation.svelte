@@ -2,9 +2,16 @@
     import { useForm } from '@inertiajs/svelte';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { Loader4 } from '@steeze-ui/remix-icons';
-
     import Button from '../Components/Button.svelte';
+    import { isHexLight } from '../helpers/helpers';
+
     export let invitation;
+
+    let isEmbed = window.self !== window.top;
+    if(isEmbed) delete invitation.description;
+
+    const color = invitation.custom_color ?? '#3b82f6';
+    const textColorClass = isHexLight(color) ? 'text-black' : 'text-light';
 
     let form = useForm({
         email: null,
@@ -13,6 +20,7 @@
     });
 
     let isDone = false;
+    let imageLoaded = false;
 
     function submit() {
         $form.post('/api/accept-invitation', {
@@ -21,11 +29,16 @@
 
                 if(invitation.redirect_url) {
                     setTimeout(() => {
-                        window.location = invitation.redirect_url;
-                    }, 1000);
+                        (isEmbed ? parent : window).location = invitation.redirect_url;
+                    }, 750);
                 }
-            }
+            },
+            onError: () =>  alert('Something went wrong')
         });
+    }
+
+    function replaceLineBreaks(text) {
+        return '<p>' + text.replaceAll('\n', '</p><p>') + '</p>';
     }
 
     // redirect_url
@@ -36,24 +49,28 @@
     <meta name="robots" content="noindex">
 </svelte:head>
 
-<div class="h-screen bg-gray-100 grid place-items-center content-center gap-4 p-4">
-    <div class="bg-white {invitation.image_url && 'max-w-screen-lg md:aspect-[7/3]'} border rounded-lg overflow-hidden md:flex">
-        {#if invitation.image_url}
-            <img class="aspect-[4/3] object-cover" src={invitation.image_url} alt="">
-        {/if}
-    
-        <div class="p-6 space-y-4 flex flex-col justify-between {invitation.image_url || 'max-w-md'}">
-            {#if invitation.logo_url}
+<div style="--color: {color}; --color-light: {color + '26'}"
+    class="bg-[var(--color)] h-screen grid place-items-center content-center gap-4 p-4 bg-cover bg-center">
+    {#if invitation.image_url}
+        <img on:load={() => imageLoaded = true} src={invitation.image_url} alt="" class:opacity-50={imageLoaded} draggable="false"
+            class="opacity-0 grayscale transition-opacity duration-[3s] delay-500 object-cover w-full h-full fixed top-0 left-0">
+    {/if}
+
+    <div class="bg-white border rounded-lg overflow-hidden md:flex z-10 shadow">
+        <div class="p-6 space-y-4 flex flex-col justify-between max-w-md">
+            {#if invitation.logo}
                 <div>
-                    <img class="w-40" src={invitation.logo_url} alt="">
+                    <img class="w-36" {...invitation.logo} alt="">
                 </div>
             {/if}
 
-            <div class="space-y-2">
+            <div class="space-y-2 overflow-scroll">
                 <h2 class="text-2xl font-bold leading-tight">{invitation.title}</h2>
 
                 {#if invitation.description}
-                    <p class="text-gray-400 leading-tight">{invitation.description}</p>
+                    <div class="text-gray-400 leading-tight space-y-2">
+                        {@html replaceLineBreaks(invitation.description)}
+                    </div>
                 {/if}
             </div>
 
@@ -63,26 +80,28 @@
                 <form class:pointer-events-none={$form.processing} class:opacity-75={$form.processing} on:submit|preventDefault={submit} class="flex lg:flex-row flex-col gap-2">
                     <label class="w-full">
                         {#if invitation.email_domain}
-                            <div class="input flex">
+                            <div class="input flex focus-within:border-[var(--color)] ring-[var(--color-light)] focus-within:ring transition-all">
                                 <input bind:value={$form.email_part} class="plain-input" required placeholder="yourname" type="text">
                                 <span>@{ invitation.email_domain }</span>
                             </div>
                         {:else}
-                            <input bind:value={$form.email} required type="email" placeholder="ceo@profit.biz">
+                            <input bind:value={$form.email} class="focus:!border-[var(--color)] !ring-[var(--color-light)]" required type="email" placeholder="ceo@profit.biz">
                         {/if}
                     </label>
                     
-                    <Button class="relative" primary={true}>
+                    <Button submit={true} class="relative {textColorClass} !bg-[var(--color)] !border-[var(--color)]" style="primary">
                         <div class:opacity-100={$form.processing} class="opacity-0 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
                             <Icon class="w-5 animate-spin" src={Loader4}/>
                         </div>
 
-                        <span class:opacity-0={$form.processing}>Submit</span>
+                        <span class:opacity-0={$form.processing}>Invite</span>
                     </Button>
                 </form>
             {/if}
         </div>
     </div>
 
-    <p class="text-sm">Created with <a class="text-blue-500 underline" href="/">smol.rsvp</a> by <a class="text-blue-500 underline" href="https://jero.zone">Jerome Paulos</a></p>
+    <p class="text-xs bg-white px-3 py-1 rounded-full border z-10">
+        Created with <a class="text-[var(--color)] underline" href="/">smol.rsvp</a>
+    </p>
 </div>

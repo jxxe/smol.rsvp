@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Logo;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -29,8 +30,9 @@ return new class extends Migration
 
             $table->string('email_domain')->nullable();
             $table->string('image_url')->nullable();
-            $table->string('logo_url')->nullable();
+            $table->foreignIdFor(Logo::class)->nullable();
             $table->string('redirect_url')->nullable();
+            $table->string('custom_color')->nullable();
 
             $table->timestamps();
         });

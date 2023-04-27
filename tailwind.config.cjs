@@ -15,6 +15,11 @@ module.exports = {
             },
             fontFamily: {
                 sans: ['"SF Pro"', '"Inter"', 'sans-serif']
+            },
+            animation: {
+                hover: 'hover 5s infinite cubic-bezier(0.445, 0.050, 0.550, 0.950)',
+                hover2: 'hover 6s infinite -2s cubic-bezier(0.445, 0.050, 0.550, 0.950)',
+                hover3: 'hover 8s infinite -1s cubic-bezier(0.445, 0.050, 0.550, 0.950)'
             }
         }
     },

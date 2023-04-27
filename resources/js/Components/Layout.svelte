@@ -5,11 +5,13 @@
     import InvitationForm from './InvitationForm.svelte';
     import Logo from './Logo.svelte';
     import Modal from './Modal.svelte';
+    import ModalHeader from './ModalHeader.svelte';
 
     let isOpen = false;
 </script>
 
 <Modal bind:isOpen={isOpen} closeWithEsc={false}>
+    <ModalHeader title="Create an Invitation"/>
     <InvitationForm onSuccess={() => isOpen = false}/>
 </Modal>
 
@@ -20,7 +22,7 @@
                 <Logo/>
             </div>
 
-            <Button action={() => isOpen = true} class="flex items-center gap-1 text-sm px-2 py-1">
+            <Button on:click={() => isOpen = true} class="flex items-center gap-1 text-sm !px-3 py-1">
                 <Icon class="w-5 text-blue-500" src={Plus}/>
                 <span>Create Invitation</span>
             </Button>

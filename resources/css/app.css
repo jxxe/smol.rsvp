@@ -2,9 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes hover {
+    0% { transform: translateY(-2.5%); }
+    50% { transform: translateY(2.5%); }
+    100% { transform: translateY(-2.5%); }
+}
+
 @layer components {
     input, select, textarea, .input {
-        @apply w-full outline-none resize-none bg-white;
+        @apply w-full !outline-none resize-none bg-white;
 
         &:not(.plain-input, [type=file]) {
             @apply focus:border-blue-300 focus:ring ring-blue-200 ring-opacity-50 border rounded-lg px-3 py-2 shadow-sm transition-shadow;
@@ -20,7 +26,14 @@
         padding-right: 2.5rem;
     }
 
-    label:has(input, select, textarea, .input) > span {
-        @apply text-sm ml-1 truncate;
+    label {
+        &.required > span::after {
+            content: '*';
+            color: theme('colors.red.500');
+        }
+
+        & > span {
+            @apply text-sm ml-1 truncate;
+        }
     }
 }

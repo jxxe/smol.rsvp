@@ -1,61 +1,66 @@
+<script>
+    import InvitationRow from '../Components/Dash/InvitationRow.svelte';
+    import InvitationForm from '../Components/InvitationForm.svelte';
+    import Modal from '../Components/Modal.svelte';
+    import ModalHeader from '../Components/ModalHeader.svelte';
+    import Logo from '../Components/Logo.svelte';
+    import Button from '../Components/Button.svelte';
+    import { MailAdd } from '@steeze-ui/remix-icons';
+
+    export let invitations = [];
+    let createModalOpen = false;
+</script>
+
 <svelte:head>
     <title>Dashboard — smol.rsvp</title>
 </svelte:head>
 
-<script context="module">
-    export { default as layout } from '../Components/Layout.svelte'
-</script>
+<Modal bind:isOpen={createModalOpen} closeWithEsc={false}>
+    <ModalHeader title="Create an Invitation"/>
+    <InvitationForm onSuccess={() => createModalOpen = false}/>
+</Modal>
 
-<script>
-    import InvitationForm from '../Components/InvitationForm.svelte';
-    import { Icon } from '@steeze-ui/svelte-icon';
-    import { Plus, QrCode, Trash } from '@steeze-ui/heroicons';
-    import { CalendarCheck } from '@steeze-ui/remix-icons';
-    import { inertia } from '@inertiajs/svelte';
+<div class="p-4">
+    <main class="p-4 max-w-screen-sm mx-auto space-y-4">
+        <header class="flex items-center {invitations.length ? 'justify-between' : 'justify-center'}">
+            <div class="w-fit">
+                <Logo/>
+            </div>
 
-    export let invitations = [];
-
-    function getQrUrl(slug) {
-        let result = 'https://api.qrserver.com/v1/create-qr-code/?data=';
-        result += encodeURIComponent(`https://smol.rsvp/invitation/${slug}`);
-        return result;
-    }
-</script>
-
-{#if invitations.length}
-    <div>
-        <div class="shadow-sm rounded-lg overflow-hidden border divide-y">
-            {#each invitations as invitation}
-                <div class="flex items-center justify-between">
-                    <a href="/invitation/{invitation.slug}" class="font-bold truncate px-4">{invitation.title}</a>
-
-                    <div class="flex items-center divide-x leading-none">
-                        <span class="px-4 py-3 flex items-center gap-1">
-                            <Icon class="w-4 text-green-500" src={CalendarCheck} theme="solid"/>
-                            <span>{invitation.rsvps}</span>
-                            <span class="hidden sm:inline">RSVP{invitation.rsvps !== 1 ? 's' : ''}</span>
-                        </span>
-
-                        <a class="px-4 py-3 flex items-center gap-1 hover:bg-gray-100 transition-colors" href={getQrUrl(invitation.slug)} target="_blank" rel="noreferrer">
-                            <Icon class="w-4 text-blue-500" src={QrCode} theme="mini"/>
-                            <span class="hidden sm:inline">QR Code</span>
-                        </a>
-
-                        <button class="px-4 py-3 flex items-center gap-1 hover:bg-gray-100 transition-colors" use:inertia={{ href: `/invitations/${invitation.slug}`, method: 'delete' }}>
-                            <Icon class="w-4 text-red-500" src={Trash} theme="mini"/>
-                            <span class="hidden sm:inline">Delete</span>
-                        </button>
+            {#if invitations.length}
+                <Button icon={MailAdd} on:click={() => createModalOpen = true}>
+                    Create Invitation
+                </Button>
+            {/if}
+        </header>
+    
+        <div class="space-y-4">
+            {#if invitations.length}
+                <div>
+                    <div class="shadow-sm rounded-lg overflow-hidden border divide-y">
+                        {#each invitations as invitation}
+                            <InvitationRow {invitation}/>
+                        {/each}
                     </div>
                 </div>
-            {/each}
+            {/if}
+        
+            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 space-y-3">
+                <h2 class="font-bold leading-none text-lg">How does this work?</h2>
+        
+                <ol class="list-decimal list-inside leading-tight space-y-1">
+                    <li><button class="underline text-blue-500" on:click={() => createModalOpen = true}>Create an invitation</button> and select a calendar event</li>
+                    <li>Send out the link, put it on posters, etc.</li>
+                    <li>When people RSVP, they’ll be invited to the calenar event</li>
+                    <li>The event and any changes will be added to attendees’ calendars</li>
+                </ol>
+            </div>
+        
+            {#if !invitations.length}
+                <div class="border rounded-lg overflow-hidden">
+                    <InvitationForm/>
+                </div>
+            {/if}
         </div>
-    </div>
-{:else}
-    <div class="border rounded-lg overflow-hidden">
-        <InvitationForm/>
-    </div>
-{/if}
-
-<footer class="mt-4">
-    <p class="text-sm text-center">by <a class="underline text-blue-500" href="https://jero.zone">Jerome Paulos</a></p>
-</footer>
+    </main>
+</div>

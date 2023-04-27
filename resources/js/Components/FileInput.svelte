@@ -5,8 +5,11 @@
 
     export let value;
     export let accept = '';
+    export let onChange = () => {};
 
-    function pickFile() {
+    function pickFile(event) {
+        event.preventDefault();
+
         if(value) {
             value = '';
             return;
@@ -15,15 +18,18 @@
         let element = document.createElement('input');
         element.type = 'file';
         element.accept = accept;
-        element.addEventListener('change', () => value = element.files[0]);
+
+        element.addEventListener('change', () => {
+            value = element.files[0];
+            onChange();
+        });
+
         element.click();
     }
 </script>
 
-<Button action={event => {
-    event.preventDefault();
-    pickFile();
-}} class="text-left flex gap-2 items-center w-full !px-3">
-    <Icon class="{value ? 'text-red-500' : 'text-blue-500'} w-4" theme={value ? 'outlined' : 'mini'} src={value ? Trash : ArrowUpTray}/>
-    <span class="truncate">{value ? value.name : 'Upload File'}</span>
-</Button>
+<Button
+    on:click={pickFile} class="w-full"
+    iconTheme={value ? 'outlined' : 'mini'} icon={value ? Trash : ArrowUpTray}
+    iconClass={value ? 'text-red-500' : 'text-blue-500'}
+>{value ? value.name : 'Upload File'}</Button>

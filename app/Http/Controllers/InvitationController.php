@@ -13,16 +13,23 @@ class InvitationController extends Controller
 {
     public function show(Invitation $invitation)
     {
+        $logo = $invitation->logo()->first();
+
         return Inertia::render('Invitation', [
-            'invitation' => $invitation->only(
-                'title',
-                'image_url',
-                'logo_url',
-                'redirect_url',
-                'email_domain',
-                'description',
-                'slug'
-            )
+            'invitation' => [
+                'slug' => $invitation->slug,
+                'title' => $invitation->title,
+                'description' => $invitation->description,
+                'email_domain' => $invitation->email_domain,
+                'image_url' => $invitation->image_url,
+                'redirect_url' => $invitation->redirect_url,
+                'custom_color' => $invitation->custom_color,
+                'logo' => $logo ? [
+                    'src' => $logo->image_url,
+                    'width' => $logo->width,
+                    'height' => $logo->height,
+                ] : null
+            ]
         ]);
     }
 
@@ -30,9 +37,9 @@ class InvitationController extends Controller
     {
         $invitation = Invitation::where('slug', request('invitation'))->first();
 
-        if($invitation === null) return response(status: 400);
-        if(request('email') && $invitation->email_domain) response(status: 401);
-        if(request('email_part') && !$invitation->email_domain) response(status: 402);
+        if($invitation === null) return response('Invitation not found', 400);
+        if(request('email') && $invitation->email_domain) response(status: 400);
+        if(request('email_part') && !$invitation->email_domain) response(status: 400);
 
         if($invitation->email_domain) $email = request('email_part') . '@' . $invitation->email_domain;
         else $email = request('email');
@@ -44,7 +51,7 @@ class InvitationController extends Controller
         $event['attendees'] = $event['attendees'] ?? [];
         $event['attendees'][] = [
             'email' => $email,
-            'responseStatus' => 'needsAction'
+            'responseStatus' => 'accepted' // needsAction
         ];
 
         Http::withToken(auth()->user()->token())->put(
@@ -59,9 +66,37 @@ class InvitationController extends Controller
     public function destroy(Invitation $invitation)
     {
         if($invitation->user_id === auth()->user()->id) {
-            $invitation->delete();
-            if($invitation->logo_url) Storage::delete($invitation->logo_url);
             if($invitation->image_url) Storage::delete($invitation->image_url);
+            $invitation->delete();
+        } else return response(status: 400);
+    }
+
+    public function update(Invitation $invitation)
+    {
+        if($invitation->user_id === auth()->user()->id) {
+            $data = request()->validate([
+                'title' => 'string|required',
+                'description' => 'string|nullable',
+                'email_domain' => 'string|regex:/^[a-z0-9]+\.[a-z]{2,}$/i|nullable',
+                'logo_id' => 'integer|nullable',
+                'image' => ['file', 'nullable', File::image()->max(5 * 1024)],
+                'redirect_url' => 'url|nullable',
+                'image_url' => 'nullable',
+                'custom_color' => 'nullable|regex:/#[0-9A-f]{6}/'
+            ]);
+
+            if($data['image_url'] !== null) {
+                unset($data['image_url']);
+            }
+
+            unset($data['image']);
+
+            if(request()->hasFile('image')) {
+                if($invitation->image_url) Storage::delete($invitation->image_url);
+                $data['image_url'] = request()->file('image')->storePublicly('uploads');
+            }
+    
+            $invitation->update($data);
         }
     }
     
@@ -73,17 +108,15 @@ class InvitationController extends Controller
             'calendar_id' => 'string|required',
             'event_id' => 'string|required',
             'email_domain' => 'string|regex:/^[a-z0-9]+\.[a-z]{2,}$/i|nullable',
-            'logo' => ['file', 'nullable', File::image()->max(2 * 1024)],
+            'logo_id' => 'integer|nullable',
             'image' => ['file', 'nullable', File::image()->max(5 * 1024)],
-            'redirect_url' => 'url|nullable'
+            'redirect_url' => 'url|nullable',
+            'custom_color' => 'nullable|regex:/#[0-9A-f]{6}/'
         ]);
 
         $data['slug'] = Str::slug($data['title'] . ' ' . Str::random(6));
-        unset($data['logo'], $data['image']);
 
-        if(request()->hasFile('logo')) {
-            $data['logo_url'] = request()->file('logo')->storePublicly('uploads');
-        }
+        unset($data['image']);
 
         if(request()->hasFile('image')) {
             $data['image_url'] = request()->file('image')->storePublicly('uploads');
