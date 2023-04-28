@@ -15,6 +15,7 @@ Route::get('/', function() {
 Route::view('/home', 'home');
 
 Route::get('/invitation/{invitation:slug}', [InvitationController::class, 'show']);
+Route::post('/api/accept-invitation', [InvitationController::class, 'accept']);
 
 Route::redirect('/login', '/auth/redirect')->name('login');
 Route::get('/auth/redirect', [AuthController::class, 'redirect'])->name('auth.redirect');
@@ -29,7 +30,6 @@ Route::middleware('auth')->group(function() {
     Route::delete('/invitations/{invitation:slug}', [InvitationController::class, 'destroy']);
     Route::post('/invitations/{invitation:slug}', [InvitationController::class, 'update']); // PHP doesn't support uploading files with PUT
 
-    Route::post('/api/accept-invitation', [InvitationController::class, 'accept']);
     Route::get('/api/calendars', [CalendarController::class, 'list']);
     Route::get('/api/events', [CalendarController::class, 'events']);
 
