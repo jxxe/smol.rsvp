@@ -62,7 +62,7 @@
 
 <!-- svelte-ignore a11y-label-has-associated-control a11y-click-events-have-key-events a11y-autofocus -->
 <form on:submit|preventDefault={submit} class:pointer-events-none={$form.processing}>
-    <div class="grid gap-2 sm:grid-cols-6 p-4">
+    <div class="grid gap-2 grid-cols-2 sm:grid-cols-6 p-4">
         <label class="col-span-full required">
             <span>Invitation Title</span>
             <input autofocus required bind:value={$form.title} placeholder="Enterprise Business Meeting" type="text">
