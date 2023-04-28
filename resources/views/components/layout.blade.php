@@ -15,7 +15,7 @@
     <x-meta/>
 </head>
 
-<body class="antialiased text-gray-700">
+<body class="antialiased text-gray-700 overflow-x-hidden">
     <div class="p-4">
         <main class="max-w-screen-lg mx-auto space-y-14">
             <header>

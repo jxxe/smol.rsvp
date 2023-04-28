@@ -41,7 +41,7 @@
             </div>
         </div>
     
-        <div class="px-4 w-fit mx-auto">
+        <div class="w-fit mx-auto -translate-x-1/4 sm:translate-x-0">
             <img class="animate-hover w-96 rounded-lg shadow z-20 relative border" src="/images/example1.png" alt="">
             <img class="animate-hover2 w-96 ml-72 -mt-24 rounded-lg z-10 relative shadow border" src="/images/example2.png" alt="">
             <img class="animate-hover3 w-96 ml-24 -mt-24 rounded-lg relative shadow border" src="/images/example3.png" alt="">
