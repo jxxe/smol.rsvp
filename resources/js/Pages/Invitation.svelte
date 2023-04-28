@@ -88,14 +88,14 @@
                             <input bind:value={$form.email} class="focus:!border-[var(--color)] !ring-[var(--color-light)]" required type="email" placeholder="ceo@profit.biz">
                         {/if}
                     </label>
-                    
-                    <Button submit={true} class="relative {textColorClass} !bg-[var(--color)] !border-[var(--color)]" style="primary">
+
+                    <button class="{textColorClass} relative bg-[var(--color)] border border-[var(--color)] rounded-lg px-4 py-2 shadow-sm transition-all" type="submit">
                         <div class:opacity-100={$form.processing} class="opacity-0 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
                             <Icon class="w-5 animate-spin" src={Loader4}/>
                         </div>
 
                         <span class:opacity-0={$form.processing}>Invite</span>
-                    </Button>
+                    </button>
                 </form>
             {/if}
         </div>
