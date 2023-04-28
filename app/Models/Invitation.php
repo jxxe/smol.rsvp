@@ -38,7 +38,7 @@ class Invitation extends Model
                 if(empty($value)) return $value;
                 $url = url(Storage::url($value));
                 if(app()->environment('local')) return $url;
-                $url = urlencode($value);
+                $url = urlencode($url);
                 return "https://wsrv.nl/?url=$url&w=1200&we&output=webp";
             }
         );

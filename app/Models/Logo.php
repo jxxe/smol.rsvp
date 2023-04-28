@@ -20,17 +20,12 @@ class Logo extends Model
     
     public function imageUrl(): Attribute
     {
-        return $this->urlToCdn();
-    }
-
-    private function urlToCdn(): Attribute
-    {
         return Attribute::make(
             get: function($value) {
                 if(empty($value)) return $value;
                 $url = url(Storage::url($value));
                 if(app()->environment('local')) return $url;
-                $url = urlencode($value);
+                $url = urlencode($url);
                 return "https://wsrv.nl/?url=$url&w=512&we&output=webp";
             }
         );
