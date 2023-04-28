@@ -7,7 +7,7 @@
 
     <link rel="icon" href="{{ asset('images/favicon.svg') }}">
 
-    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,700">
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=figtree:400,400i,600,600i&display=swap">
 
     @vite('resources/css/app.css')
 

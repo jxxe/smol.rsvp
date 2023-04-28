@@ -14,7 +14,7 @@ module.exports = {
                 DEFAULT: colors.neutral[200]
             },
             fontFamily: {
-                sans: ['"SF Pro"', '"Inter"', 'sans-serif']
+                sans: ['"Figtree"', '"SF Pro"', 'sans-serif']
             },
             animation: {
                 hover: 'hover 5s infinite cubic-bezier(0.445, 0.050, 0.550, 0.950)',
