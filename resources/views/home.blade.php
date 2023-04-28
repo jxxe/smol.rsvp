@@ -37,7 +37,7 @@
     
             <div>
                 <span class="text-blue-500">✓</span>
-                <span>Redirect to any URL after RSVP</span>
+                <span>Redirect to any URL after RSVPing</span>
             </div>
         </div>
     

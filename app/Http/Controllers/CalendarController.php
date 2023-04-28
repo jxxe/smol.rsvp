@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use DateTime;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class CalendarController extends Controller
@@ -36,16 +38,37 @@ class CalendarController extends Controller
             ]
         )->json('items');
 
-        return collect($events)->filter(function($event) {
-            return ($event['creator']['self'] ?? false) || ($event['organizer']['self'] ?? false);
-        })->sort(function($a, $b) {
-            return strtotime($a['start']['dateTime']) - strtotime($b['start']['dateTime']);
-        })->map(function($event) {
-            return [
-                'id' => $event['id'],
-                'title' => $event['summary'],
-                'date' => empty($event['recurrence']) ? Carbon::createFromTimeString($event['start']['dateTime'])->format('M j') : 'Recurring'
-            ];
-        })->values();
+        return collect($events)
+            ->filter(function($event) {
+                    // Who the fuck knows
+                    if(!key_exists('start', $event) || !key_exists('end', $event)) return false;
+
+                    // Remove events that haven't been confirmed
+                    if($event['status'] !== 'confirmed') return false;
+
+                    // If should be able to add event to RSVP
+                    if($event['creator']['self'] ?? false) return true;
+                    if($event['organizer']['self'] ?? false) return true;
+
+                    return false;
+                })
+            ->map(function($event) {
+                    // Events will have `date` if all day and `dateTime` otherwise
+                    $event['start']['date'] = new DateTime($event['start']['dateTime'] ?? $event['start']['date']);
+                    $event['end']['date'] = new DateTime($event['end']['dateTime'] ?? $event['end']['date']);
+                    return $event;
+                })
+            ->sort(function($a, $b) {
+                    // Sort events nearest to furthest future
+                    return $a['start']['date'] > $b['start']['date'];
+                })
+            ->map(function($event) {
+                    return [
+                        'id' => $event['id'],
+                        'title' => $event['summary'],
+                        'date' => empty($event['recurrence']) ? $event['start']['date']->format('M j') : 'Recurring'
+                    ];
+                })
+            ->values();
     }
 }
