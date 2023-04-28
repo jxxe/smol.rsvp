@@ -28,7 +28,7 @@ class Logo extends Model
         return Attribute::make(
             get: function($value) {
                 if(empty($value)) return $value;
-                $url = Storage::url($value);
+                $url = url(Storage::url($value));
                 if(app()->environment('local')) return $url;
                 $url = urlencode($value);
                 return "https://wsrv.nl/?url=$url&w=512&we&output=webp";
