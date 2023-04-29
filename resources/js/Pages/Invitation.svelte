@@ -11,7 +11,7 @@
     if(isEmbed) delete invitation.description;
 
     const color = invitation.custom_color ?? '#3b82f6';
-    const textColorClass = isHexLight(color) ? 'text-black' : 'text-light';
+    const textColorClass = isHexLight(color) ? 'text-black' : 'text-white';
 
     let form = useForm({
         email: null,
