@@ -53,7 +53,7 @@
     class="bg-[var(--color)] h-screen grid place-items-center content-center gap-4 p-4 bg-cover bg-center">
     {#if invitation.image_url}
         <img on:load={() => imageLoaded = true} src={invitation.image_url} alt="" class:opacity-50={imageLoaded} draggable="false"
-            class="opacity-0 grayscale transition-opacity duration-[3s] delay-500 object-cover w-full h-full fixed top-0 left-0">
+            class="opacity-0 grayscale transition-opacity duration-[3s] delay-250 object-cover w-full h-full fixed top-0 left-0">
     {/if}
 
     <div class="bg-white border rounded-lg overflow-hidden md:flex z-10 shadow">
