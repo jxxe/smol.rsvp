@@ -2,11 +2,12 @@
     <div>
         <h1 class="text-2xl font-bold mb-2">Privacy Policy</h1>
     
-        <h2 class="text-xl font-bold mb-2">What data we store</h2>
+        <h2 class="text-xl font-bold mb-2">What data we collect</h2>
         <ul class="list-disc list-inside marker:text-blue-500">
             <li>The name and email associated with your Google account</li>
             <li>Your Google refresh token so we can securely access your account</li>
             <li>The IDs of any Google Calendar events you attach to an invitation</li>
+            <li>Anonymous analytics using <a href="https://beamanalytics.io/privacy">Beam Analytics</a></li>
         </ul>
     
         <h2 class="text-xl font-bold mt-6 mb-2">How you can delete your data</h2>
