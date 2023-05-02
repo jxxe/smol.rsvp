@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import { useForm } from '@inertiajs/svelte';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { Loader4 } from '@steeze-ui/remix-icons';
-    import Button from '../Components/Button.svelte';
     import { isHexLight } from '../helpers/helpers';
+    import { classes } from '../helpers/classes';
 
     export let invitation;
 
@@ -40,12 +40,10 @@
     function replaceLineBreaks(text) {
         return '<p>' + text.replaceAll('\n', '</p><p>') + '</p>';
     }
-
-    // redirect_url
 </script>
 
 <svelte:head>
-    <title>Please RSVP for {invitation.title} — smol.rsvp</title>
+    <title>{invitation.title} — smol.rsvp</title>
     <meta name="robots" content="noindex">
 </svelte:head>
 
@@ -53,7 +51,9 @@
     class="bg-[var(--color)] h-screen grid place-items-center content-center gap-4 p-4 bg-cover bg-center">
     {#if invitation.image_url}
         <img on:load={() => imageLoaded = true} src={invitation.image_url} alt="" class:opacity-50={imageLoaded} draggable="false"
-            class="opacity-0 grayscale transition-opacity duration-[3s] delay-250 object-cover w-full h-full fixed top-0 left-0">
+            class={classes('grayscale object-cover w-full h-full fixed top-0 left-0', {
+                'transition-opacity opacity-0 duration-[3s] delay-250': !new URLSearchParams(location.search).has('noAnimate')
+            })}>
     {/if}
 
     <div class="bg-white border rounded-lg overflow-hidden md:flex z-10 shadow">

@@ -14,7 +14,7 @@ Route::get('/', function() {
 
 Route::view('/home', 'home');
 
-Route::get('/invitation/{invitation:slug}', [InvitationController::class, 'show']);
+Route::get('/invitation/{invitation:slug}', [InvitationController::class, 'show'])->name('invitation');
 Route::post('/api/accept-invitation', [InvitationController::class, 'accept']);
 
 Route::redirect('/login', '/auth/redirect')->name('login');
