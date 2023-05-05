@@ -94,7 +94,7 @@
                             <Icon class="w-5 animate-spin" src={Loader4}/>
                         </div>
 
-                        <span class:opacity-0={$form.processing}>Invite</span>
+                        <span class:opacity-0={$form.processing}>RSVP</span>
                     </button>
                 </form>
             {/if}

@@ -1,6 +1,9 @@
 <x-layout title="Free and easy RSVP pages, powered by Google Calendar">
     <div class="space-y-14">
-        <h1 class="sm:text-3xl text-2xl font-bold text-center">Free and easy RSVP pages<br><span class="text-blue-500">powered by Google Calendar</span></h1>
+        <h1 class="sm:text-3xl text-2xl font-bold text-center">
+            <span>Free and easy RSVP pages</span><br>
+            <span class="text-blue-500">powered by Google Calendar</span>
+        </h1>
     
         <div class="text-center space-y-2">
             <a href="{{ route('auth.redirect') }}" class="px-3 flex items-center gap-2 w-fit mx-auto border rounded-lg py-2 shadow-sm bg-blue-500 text-white border-blue-500 ">
@@ -11,6 +14,8 @@
     
                 <span>Login with Google Calendar</span>
             </a>
+
+            <p class="text-sm text-gray-500">Guests can use any calendar</p>
     
             {{-- <a href="{{ route('auth.redirect') }}" class="w-52 mx-auto block">
                 <img wdith="382" height="92" src="{{ asset('images/google-login.png') }}" alt="">
@@ -22,17 +27,17 @@
         <div class="text-center">
             <div>
                 <span class="text-blue-500">✓</span>
-                <span>Upload your own logo and image</span>
+                <span>Personalize with your logo and brand color</span>
             </div>
     
             <div>
                 <span class="text-blue-500">✓</span>
-                <span>Limit to specific email domain</span>
+                <span>Limit to your domain—great for school and company events</span>
             </div>
     
             <div>
                 <span class="text-blue-500">✓</span>
-                <span>Redirect to any URL after RSVPing</span>
+                <span>Guests are invited to your Google Calendar event</span>
             </div>
         </div>
     
