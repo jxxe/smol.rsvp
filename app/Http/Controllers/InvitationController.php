@@ -51,7 +51,7 @@ class InvitationController extends Controller
         $event['attendees'] = $event['attendees'] ?? [];
         $event['attendees'][] = [
             'email' => $email,
-            'responseStatus' => 'accepted' // needsAction
+            'responseStatus' => 'needsAction' // needsAction, accepted
         ];
 
         Http::withToken(auth()->user()->token())->put(
