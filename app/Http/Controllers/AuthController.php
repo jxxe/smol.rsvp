@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
@@ -41,6 +42,29 @@ class AuthController extends Controller
         ]);
 
         auth()->login($user, true);
+
+        if(env('DISCORD_WEBHOOK') && $user->wasRecentlyCreated) {
+            Http::post(env('DISCORD_WEBHOOK'), [
+                'embeds' => [
+                    [
+                        'title' => 'A new user has signed up for smol.rsvp!',
+                        'thumbnail' => [
+                            'url' => $googleUser->avatar
+                        ],
+                        'fields' => [
+                            [
+                                'name' => 'Name',
+                                'value' => $user->name
+                            ],
+                            [
+                                'name' => 'Email',
+                                'value' => $user->email
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+        }
 
         return redirect()->route('dash');
     }
