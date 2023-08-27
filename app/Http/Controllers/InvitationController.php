@@ -44,7 +44,7 @@ class InvitationController extends Controller
         if($invitation->email_domain) $email = request('email_part') . '@' . $invitation->email_domain;
         else $email = request('email');
 
-        $event = Http::withToken(auth()->user()->token())->get(
+        $event = Http::withToken($invitation->user->token())->get(
             "https://www.googleapis.com/calendar/v3/calendars/$invitation->calendar_id/events/$invitation->event_id"
         )->json();
 
@@ -54,7 +54,7 @@ class InvitationController extends Controller
             'responseStatus' => 'needsAction' // needsAction, accepted
         ];
 
-        Http::withToken(auth()->user()->token())->put(
+        Http::withToken($invitation->user->token())->put(
             "https://www.googleapis.com/calendar/v3/calendars/$invitation->calendar_id/events/$invitation->event_id?sendUpdates=all",
             $event
         );
